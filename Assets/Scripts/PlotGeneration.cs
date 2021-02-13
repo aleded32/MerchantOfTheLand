@@ -6,9 +6,9 @@ public class PlotGeneration : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    public Sprite plotTiles;
+    public Sprite[] plotTiles;
     public GameObject plot;
-    public GameObject[,] tiles;
+    public List<GameObject> plots;
 
     void Start()
     {
@@ -24,25 +24,26 @@ public class PlotGeneration : MonoBehaviour
     void plotGen(int x, int y) 
     {
 
-        tiles = new GameObject[x,y];
+        plots = new List<GameObject>();
+        plot.GetComponent<SpriteRenderer>().sprite = plotTiles[0];
         
         for (int i = 0; i < x; i++) 
         {
             for (int j = 0; j < y; j++)
             {
-                tiles[i, j] = plot;
-                tiles[i,j].GetComponent<SpriteRenderer>().sprite = plotTiles;
 
                 if (i < 26 && j < 6)
                 {
-                    Instantiate(tiles[i, j], new Vector3(i - 14.5f, j - 9.5f), Quaternion.identity);
+                    plots.Add(Instantiate(plot, new Vector3(i - 14.5f, j - 9.5f), Quaternion.identity));
                 }
                 else if (i > 11 && j > 5) 
                 {
-                    Instantiate(tiles[i, j], new Vector3(i - 14.5f, j - 9.5f), Quaternion.identity);
+                    plots.Add(Instantiate(plot, new Vector3(i - 14.5f, j - 9.5f), Quaternion.identity));
                 }
             }
         }
+
+        
     }
 
 

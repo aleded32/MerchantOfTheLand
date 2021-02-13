@@ -2,38 +2,74 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
 
     int speed = 5;
     public Animator anim;
+    public GameObject selectionWheel;
+    public Image[] selections;
+
+    public plotScraping scraping;
+
+    private void Update()
+    { 
+           
+       
+
+    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Gamepad.current.leftStick.left.isPressed) 
+        if (Gamepad.current.aButton.ReadValue() == 0)
         {
-            moveLeft();
-        }
-        else if (Gamepad.current.leftStick.right.isPressed)
-        {
-            moveRight();
-        }
-        else if (Gamepad.current.leftStick.up.isPressed)
-        {
-            moveUp();
+            if (Gamepad.current.leftStick.left.isPressed)
+            {
+                moveLeft();
+            }
+            else if (Gamepad.current.leftStick.right.isPressed)
+            {
+                moveRight();
+            }
+            else if (Gamepad.current.leftStick.up.isPressed)
+            {
+                moveUp();
+
+            }
+            else if (!Gamepad.current.leftStick.IsPressed())
+            {
+                anim.SetInteger("speed", 0);
+            }
+            else if (Gamepad.current.leftStick.down.isPressed)
+            {
+                moveDown();
+            }
+
+            selectionWheel.SetActive(false);
+            scraping.isPlotted = false;
 
         }
-        else if(!Gamepad.current.leftStick.IsPressed()) 
+        else if (Gamepad.current.aButton.ReadValue() == 1) 
         {
+            selectionWheel.SetActive(true);
             anim.SetInteger("speed", 0);
+
+
+            if (Gamepad.current.dpad.ReadValue() == new Vector2(0, 1))
+            {
+                selections[0].color = new Color32(168, 168, 168, 255);
+                scraping.hoeingPlot();
+            }
+            else 
+            {
+                selections[0].color = new Color32(255, 255, 255, 255);
+            }
+            
         }
-        else if (Gamepad.current.leftStick.down.isPressed)
-        {
-            moveDown();
-        }
-        
+
     }
 
     void moveLeft()
