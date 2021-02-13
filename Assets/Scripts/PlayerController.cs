@@ -14,62 +14,12 @@ public class PlayerController : MonoBehaviour
 
     public plotScraping scraping;
 
-    private void Update()
-    { 
-           
-       
-
-    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Gamepad.current.aButton.ReadValue() == 0)
-        {
-            if (Gamepad.current.leftStick.left.isPressed)
-            {
-                moveLeft();
-            }
-            else if (Gamepad.current.leftStick.right.isPressed)
-            {
-                moveRight();
-            }
-            else if (Gamepad.current.leftStick.up.isPressed)
-            {
-                moveUp();
 
-            }
-            else if (!Gamepad.current.leftStick.IsPressed())
-            {
-                anim.SetInteger("speed", 0);
-            }
-            else if (Gamepad.current.leftStick.down.isPressed)
-            {
-                moveDown();
-            }
-
-            selectionWheel.SetActive(false);
-            scraping.isPlotted = false;
-
-        }
-        else if (Gamepad.current.aButton.ReadValue() == 1) 
-        {
-            selectionWheel.SetActive(true);
-            anim.SetInteger("speed", 0);
-
-
-            if (Gamepad.current.dpad.ReadValue() == new Vector2(0, 1))
-            {
-                selections[0].color = new Color32(168, 168, 168, 255);
-                scraping.hoeingPlot();
-            }
-            else 
-            {
-                selections[0].color = new Color32(255, 255, 255, 255);
-            }
-            
-        }
-
+        GamePadControls();
     }
 
     void moveLeft()
@@ -113,5 +63,58 @@ public class PlayerController : MonoBehaviour
     Vector3 move(Vector3 direction) 
     {
         return direction * speed * Time.deltaTime;
+    }
+
+
+    void GamePadControls() 
+    {
+        if (Gamepad.current.aButton.ReadValue() == 0)
+        {
+            if (Gamepad.current.leftStick.left.isPressed)
+            {
+                moveLeft();
+            }
+            else if (Gamepad.current.leftStick.right.isPressed)
+            {
+                moveRight();
+            }
+            else if (Gamepad.current.leftStick.up.isPressed)
+            {
+                moveUp();
+
+            }
+            else if (!Gamepad.current.leftStick.IsPressed())
+            {
+                anim.SetInteger("speed", 0);
+            }
+            else if (Gamepad.current.leftStick.down.isPressed)
+            {
+                moveDown();
+            }
+
+            selectionWheel.SetActive(false);
+            scraping.isPlotted = false;
+
+        }
+        else if (Gamepad.current.aButton.ReadValue() == 1)
+        {
+            selectionWheel.SetActive(true);
+            anim.SetInteger("speed", 0);
+
+           
+
+            if (Gamepad.current.dpad.ReadValue() == new Vector2(0, 1))
+            {
+                selections[0].color = new Color32(168, 168, 168, 255);
+                scraping.hoeingPlot();
+            }
+            else
+            {
+                selections[0].color = new Color32(255, 255, 255, 255);
+            }
+
+        }
+
+        scraping.highlightPlot();
     }
 }

@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class plotScraping : MonoBehaviour
 {
     public PlotGeneration Gen;
     public bool isPlotted = false;
+    public GameObject plotPos;
 
 
     // Update is called once per frame
@@ -31,9 +33,9 @@ public class plotScraping : MonoBehaviour
 
             for (int i = 0; i < Gen.plots.Count; i++)
             {
-                if (gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == gridpos(transform.position.x, transform.position.y))
+                if (gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == gridpos(plotPos.transform.position.x, plotPos.transform.position.y))
                 {
-
+                    Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(169, 169, 169, 200);
                     if (Gen.plots[i].GetComponent<SpriteRenderer>().sprite == Gen.plotTiles[0])
                     {
                         Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[1];
@@ -47,7 +49,27 @@ public class plotScraping : MonoBehaviour
                     }
                         
                 }
+                Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
             }
+        }
+    }
+
+    public void highlightPlot() 
+    {
+        for (int i = 0; i < Gen.plots.Count-1; i++)
+        {
+            if (gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == gridpos(plotPos.transform.position.x, plotPos.transform.position.y))
+            {
+                if(Gamepad.current.aButton.ReadValue() == 1)
+                    Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(169, 169, 169, 200);
+
+
+
+            }
+            if(Gamepad.current.aButton.ReadValue() == 0)
+                Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+            
+            
         }
     }
 

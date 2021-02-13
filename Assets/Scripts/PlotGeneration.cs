@@ -12,6 +12,8 @@ public class PlotGeneration : MonoBehaviour
 
     void Start()
     {
+        plots = new List<GameObject>();
+        plot.GetComponent<SpriteRenderer>().sprite = plotTiles[0];
         plotGen(26,16);
     }
 
@@ -24,19 +26,18 @@ public class PlotGeneration : MonoBehaviour
     void plotGen(int x, int y) 
     {
 
-        plots = new List<GameObject>();
-        plot.GetComponent<SpriteRenderer>().sprite = plotTiles[0];
+       
         
         for (int i = 0; i < x; i++) 
         {
             for (int j = 0; j < y; j++)
             {
 
-                if (i < 26 && j < 6)
+                if (i < 12 && j < 6)
                 {
                     plots.Add(Instantiate(plot, new Vector3(i - 14.5f, j - 9.5f), Quaternion.identity));
                 }
-                else if (i > 11 && j > 5) 
+                else if (i > 11) 
                 {
                     plots.Add(Instantiate(plot, new Vector3(i - 14.5f, j - 9.5f), Quaternion.identity));
                 }
