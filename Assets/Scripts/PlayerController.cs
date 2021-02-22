@@ -12,13 +12,23 @@ public class PlayerController : MonoBehaviour
     public GameObject selectionWheel;
     public Image[] selections;
 
-    public plotScraping scraping;
+    plotScraping scraping;
+    plotSeeding seeding;
+    PlantGrowing growing;
+    public PlotGeneration Gen;
 
+    private void Start()
+    {
+        scraping = new plotScraping();
+        seeding = new plotSeeding();
+        
+    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
 
+        growing = GameObject.FindWithTag("plot").GetComponent<PlantGrowing>();
         GamePadControls();
     }
 
@@ -65,10 +75,10 @@ public class PlayerController : MonoBehaviour
         return direction * speed * Time.deltaTime;
     }
 
-
+    [System.Obsolete]
     void GamePadControls() 
     {
-        if (Gamepad.current.aButton.ReadValue() == 0)
+        if (Gamepad.current.aButton.ReadValue() == 0 && Gamepad.current.bButton.ReadValue() == 0)
         {
             if (Gamepad.current.leftStick.left.isPressed)
             {
@@ -95,24 +105,47 @@ public class PlayerController : MonoBehaviour
             selectionWheel.SetActive(false);
             scraping.isPlotted = false;
 
+
         }
         else if (Gamepad.current.aButton.ReadValue() == 1)
         {
             selectionWheel.SetActive(true);
             anim.SetInteger("speed", 0);
 
-           
+
 
             if (Gamepad.current.dpad.ReadValue() == new Vector2(0, 1))
             {
                 selections[0].color = new Color32(168, 168, 168, 255);
                 scraping.hoeingPlot();
+
+            }
+            else if (Gamepad.current.dpad.ReadValue() == new Vector2(0, -1))
+            {
+                selections[2].color = new Color32(168, 168, 168, 255);
+                seeding.plantingSeed();
+            }
+            else if (Gamepad.current.dpad.ReadValue() == new Vector2(-1, 0))
+            {
+                selections[1].color = new Color32(168, 168, 168, 255);
+                growing.wateringPlant();
+
             }
             else
             {
-                selections[0].color = new Color32(255, 255, 255, 255);
+                growing.isBeingPressed = false;
+                foreach (Image image in selections)
+                {
+                    image.color = new Color32(255, 255, 255, 255);
+                }
+
+
             }
 
+        }
+        else if (Gamepad.current.bButton.ReadValue() == 1) 
+        {
+            growing.pickupVeg();
         }
 
         scraping.highlightPlot();

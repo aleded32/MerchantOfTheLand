@@ -1,28 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class plotScraping : MonoBehaviour
+public class plotScraping
 {
-    public PlotGeneration Gen;
+    PlotGeneration Gen;
     public bool isPlotted = false;
-    public GameObject plotPos;
+    GameObject plotPos;
 
-
-    // Update is called once per frame
-    void Update()
+    public plotScraping() 
     {
-
-
+        Gen = GameObject.FindWithTag("grid").GetComponent<PlotGeneration>();
+        plotPos = GameObject.FindWithTag("Player");
     }
 
-    Vector3 gridpos(float objX, float objY) 
-    {
-        int x = (int)objX - 14;
-        int y = (int)objY - 9;
-        return new Vector3(x, y);
-    }
+    
 
 
     public void hoeingPlot() 
@@ -33,32 +27,43 @@ public class plotScraping : MonoBehaviour
 
             for (int i = 0; i < Gen.plots.Count; i++)
             {
-                if (gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == gridpos(plotPos.transform.position.x, plotPos.transform.position.y))
+               
+                if (Gen.gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == Gen.gridpos(plotPos.transform.position.x, plotPos.transform.position.y))
                 {
-                    Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(169, 169, 169, 200);
-                    if (Gen.plots[i].GetComponent<SpriteRenderer>().sprite == Gen.plotTiles[0])
+                    if (Gen.plots[i].GetComponent<CheckIsScraped>().isFinishedGrowing != true)
                     {
-                        Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[1];
-                        isPlotted = true;
-                    }
 
-                    else if (Gen.plots[i].GetComponent<SpriteRenderer>().sprite == Gen.plotTiles[1]) 
-                    {
-                        Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[0];
-                        isPlotted = true;
+
+
+                        if (Gen.plots[i].GetComponent<SpriteRenderer>().sprite == Gen.plotTiles[0])
+                        {
+                            Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[1];
+                            Gen.plots[i].GetComponent<CheckIsScraped>().isScraped = true;
+                            isPlotted = true;
+                        }
+                        else if (Gen.plots[i].GetComponent<CheckIsScraped>().isScraped == true)
+                        {
+                            Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[0];
+                            Gen.plots[i].GetComponent<CheckIsScraped>().isScraped = false;
+                            Gen.plots[i].GetComponent<CheckIsScraped>().isPlanted = false;
+                            Gen.plots[i].GetComponent<CheckIsScraped>().isWatered = false;
+                            Gen.plots[i].GetComponent<CheckIsScraped>().wateredCount = 0;
+                            isPlotted = true;
+                        }
                     }
+                    
                         
                 }
-                Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+               
             }
         }
     }
 
     public void highlightPlot() 
     {
-        for (int i = 0; i < Gen.plots.Count-1; i++)
+        for (int i = 0; i < Gen.plots.Count; i++)
         {
-            if (gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == gridpos(plotPos.transform.position.x, plotPos.transform.position.y))
+            if (Gen.gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == Gen.gridpos(plotPos.transform.position.x, plotPos.transform.position.y))
             {
                 if(Gamepad.current.aButton.ReadValue() == 1)
                     Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(169, 169, 169, 200);
@@ -73,6 +78,6 @@ public class plotScraping : MonoBehaviour
         }
     }
 
-
+    
 
 }

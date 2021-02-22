@@ -6,6 +6,8 @@ TagManager:
   tags:
   - notHoed
   - hoed
+  - plot
+  - grid
   layers:
   - Default
   - TransparentFX

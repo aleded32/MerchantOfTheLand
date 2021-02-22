@@ -15041,14 +15041,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1560531098}
   - component: {fileID: 1560531097}
-  - component: {fileID: 1560531103}
   - component: {fileID: 1560531100}
   - component: {fileID: 1560531099}
   - component: {fileID: 1560531101}
   - component: {fileID: 1560531102}
   m_Layer: 0
   m_Name: player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -15165,7 +15164,7 @@ MonoBehaviour:
   - {fileID: 53498853}
   - {fileID: 588911204}
   - {fileID: 735393909}
-  scraping: {fileID: 1560531103}
+  Gen: {fileID: 1600021652}
 --- !u!50 &1560531101
 Rigidbody2D:
   serializedVersion: 4
@@ -15206,21 +15205,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1560531103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1560531096}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f7458eed343ba9449eeb04c06d5fcc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Gen: {fileID: 1600021652}
-  isPlotted: 0
-  plotPos: {fileID: 1838229120}
 --- !u!1 &1600021649
 GameObject:
   m_ObjectHideFlags: 0
@@ -15234,7 +15218,7 @@ GameObject:
   - component: {fileID: 1600021652}
   m_Layer: 0
   m_Name: Grid
-  m_TagString: Untagged
+  m_TagString: grid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -15285,6 +15269,10 @@ MonoBehaviour:
   plotTiles:
   - {fileID: -2283052586193448194, guid: 182fedc3a6e8d534c8b7857a3ea617da, type: 3}
   - {fileID: 4075576004778400724, guid: 182fedc3a6e8d534c8b7857a3ea617da, type: 3}
+  - {fileID: 21300000, guid: af4a502d7b53a334cb3a6a9ad8b7086e, type: 3}
+  - {fileID: 21300000, guid: 47c257ec3179a834e8d4493ffacfaca2, type: 3}
+  - {fileID: 21300000, guid: 43d7b94c37171fe49a636fccdc6cd9b4, type: 3}
+  - {fileID: 21300000, guid: bb2d5830ee925ee4f9b1012afc071728, type: 3}
   plot: {fileID: 9045862072633684587, guid: a7103bc5a55d3684b99e0b9b30e423d2, type: 3}
   plots: []
 --- !u!1 &1690810691
@@ -15705,8 +15693,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AssetsPPU: 100
-  m_RefResolutionX: 960
-  m_RefResolutionY: 540
+  m_RefResolutionX: 1920
+  m_RefResolutionY: 1080
   m_UpscaleRT: 0
   m_PixelSnapping: 1
   m_CropFrameX: 0
