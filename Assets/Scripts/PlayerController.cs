@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     plotSeeding seeding;
     PlantGrowing growing;
     public PlotGeneration Gen;
+    public GameObject inventory;
 
     private void Start()
     {
@@ -30,6 +31,20 @@ public class PlayerController : MonoBehaviour
 
         growing = GameObject.FindWithTag("plot").GetComponent<PlantGrowing>();
         GamePadControls();
+    }
+
+    private void Update()
+    {
+        if (Gamepad.current.bButton.ReadValue() == 1)
+        {
+            if (inventory.active == true)
+            {
+                Time.timeScale = 1.0f;
+                inventory.SetActive(false);
+
+            }
+            growing.pickupVeg();
+        }
     }
 
     void moveLeft()
@@ -78,7 +93,7 @@ public class PlayerController : MonoBehaviour
     [System.Obsolete]
     void GamePadControls() 
     {
-        if (Gamepad.current.aButton.ReadValue() == 0 && Gamepad.current.bButton.ReadValue() == 0)
+        if (Gamepad.current.aButton.ReadValue() == 0 && Gamepad.current.bButton.ReadValue() == 0 && inventory.active == false)
         {
             if (Gamepad.current.leftStick.left.isPressed)
             {
@@ -109,45 +124,62 @@ public class PlayerController : MonoBehaviour
         }
         else if (Gamepad.current.aButton.ReadValue() == 1)
         {
-            selectionWheel.SetActive(true);
-            anim.SetInteger("speed", 0);
-
-
-
-            if (Gamepad.current.dpad.ReadValue() == new Vector2(0, 1))
+            if (inventory.active == false)
             {
-                selections[0].color = new Color32(168, 168, 168, 255);
-                scraping.hoeingPlot();
+                selectionWheel.SetActive(true);
 
-            }
-            else if (Gamepad.current.dpad.ReadValue() == new Vector2(0, -1))
-            {
-                selections[2].color = new Color32(168, 168, 168, 255);
-                seeding.plantingSeed();
-            }
-            else if (Gamepad.current.dpad.ReadValue() == new Vector2(-1, 0))
-            {
-                selections[1].color = new Color32(168, 168, 168, 255);
-                growing.wateringPlant();
+                anim.SetInteger("speed", 0);
 
-            }
-            else
-            {
-                growing.isBeingPressed = false;
-                foreach (Image image in selections)
+
+
+                if (Gamepad.current.dpad.ReadValue() == new Vector2(0, 1))
                 {
-                    image.color = new Color32(255, 255, 255, 255);
+                    selections[0].color = new Color32(168, 168, 168, 255);
+                    scraping.hoeingPlot();
+
                 }
+                else if (Gamepad.current.dpad.ReadValue() == new Vector2(0, -1))
+                {
+                    selections[2].color = new Color32(168, 168, 168, 255);
+                    seeding.plantingSeed();
+                }
+                else if (Gamepad.current.dpad.ReadValue() == new Vector2(-1, 0))
+                {
+                    selections[1].color = new Color32(168, 168, 168, 255);
+                    growing.wateringPlant();
+
+                }
+                else
+                {
+                    growing.isBeingPressed = false;
+                    foreach (Image image in selections)
+                    {
+                        image.color = new Color32(255, 255, 255, 255);
+                    }
 
 
+                }
             }
 
-        }
-        else if (Gamepad.current.bButton.ReadValue() == 1) 
-        {
-            growing.pickupVeg();
-        }
+            if (Gamepad.current.dpad.ReadValue() == new Vector2(1, 0))
+            {
+                Time.timeScale = 0.0f;
+                selections[3].color = new Color32(168, 168, 168, 255);
+                inventory.SetActive(true);
+                selectionWheel.SetActive(false);
+                
+                
 
-        scraping.highlightPlot();
+            }
+            
+           
+
+        }
+        
+
+        if (inventory.active == false)
+        {
+            scraping.highlightPlot();
+        }
     }
 }
