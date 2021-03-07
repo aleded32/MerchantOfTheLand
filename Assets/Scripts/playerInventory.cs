@@ -9,13 +9,15 @@ public class playerInventory : MonoBehaviour
     ItemDatabase itemDatabase;
     public Sprite[] imageItem;
     public List<itemDefault> inventory;
-    bool isPressedAdd = false;
-    bool isPressedSub = false;
+    itemDefault selected;
+    bool isPressedSelect = false;
+    bool isPressedDeselect = false;
     bool isPressed = false;
     int inventoryFillValue = 0;
 
     public Text[] slotText;
     public Text[] amountText;
+    public Text selectedText;
     public Image arrow;
     public GameObject inventoryGameObject;
 
@@ -27,81 +29,62 @@ public class playerInventory : MonoBehaviour
 
         arrow.rectTransform.position = new Vector3(arrow.rectTransform.position.x, arrow.rectTransform.position.y, slotText[currentSlot].rectTransform.position.z);
 
-
+        selected = new itemDefault(itemDefault.itemType.none, "", 0, 0, 0, 0, null, false);
 
         inventory = new List<itemDefault>()
         {
-            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null),
-            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null),
-            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null),
-            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null),
-            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null),
-            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null),
-            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null),
-            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null),
-            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null),
-            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null),
+            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null, false),
+            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null, false),
+            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null, false),
+            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null, false),
+            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null, false),
+            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null, false),
+            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null, false),
+            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null, false),
+            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null, false),
+            new itemDefault(itemDefault.itemType.none, "", 0, 0,0,0, null, false),
 
         };
         itemDatabase = new ItemDatabase(imageItem);
 
+        addToInventory("Strawberry Seed");
+        addToInventory("Strawberry Seed");
+        addToInventory("Strawberry Seed");
         addToInventory("Corn Seed");
-        addToInventory("Corn");
+        addToInventory("Corn Seed");
+        addToInventory("Corn Seed");
+        addToInventory("Corn Seed");
+        addToInventory("Carrot Seed");
+        addToInventory("Carrot Seed");
+        addToInventory("Cabbage Seed");
+        addToInventory("Cabbage Seed");
+        addToInventory("Cabbage Seed");
 
+
+    }
+
+    void updateSelectedText() 
+    {
+        selectedText.text = selected.name;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(currentSlot);
 
 
-
+        updateSelectedText();
         inventoryControls();
 
 
 
 
         //TESTING PURPOSE
-        if (Gamepad.current.xButton.ReadValue() == 1 && isPressedAdd == false)
-        {
-            addToInventory("Corn Seed");
+      
 
-        }
-
-
-
-        if (Gamepad.current.rightShoulder.ReadValue() == 1 && isPressedAdd == false)
-        {
-            addToInventory("Corn");
-
-        }
-
-        if (Gamepad.current.xButton.ReadValue() == 0 && Gamepad.current.rightShoulder.ReadValue() == 0)
-        {
-            isPressedAdd = false;
-
-        }
-
-
-        if (Gamepad.current.yButton.ReadValue() == 1 && isPressedSub == false)
-        {
-            subtractFromInventory("Corn Seed");
-        }
-
-        else if (Gamepad.current.yButton.ReadValue() == 0)
-        {
-
-            isPressedSub = false;
-
-        }
-        //end of testing
-
-        Debug.Log("amount " + inventory[0].amount + " name " + inventory[0].name);
-        Debug.Log(inventoryFillValue);
     }
 
-    void addToInventory(string itemName)
+    public void addToInventory(string itemName)
     {
 
         if (inventory.Exists(x => x.name == itemName))
@@ -131,55 +114,68 @@ public class playerInventory : MonoBehaviour
             }
         }
 
-        isPressedAdd = true;
+       
 
     }
 
-    void subtractFromInventory(string itemName)
+    public itemDefault getSelected() 
+    {
+        return selected;
+    }
+
+    public int getCurrentSlot()
+    {
+        return currentSlot;
+    }
+
+    
+
+    public string itemNameToBeGround()
+    {
+        if (getSelected().name == "Corn Seed") { return "Corn"; }
+        else if (getSelected().name == "Cabbage Seed") { return "Cabbage"; }
+        else if (getSelected().name == "Carrot Seed") { return "Carrot"; }
+        else if (getSelected().name == "Strawberry Seed") { return "Strawberry"; }
+        else { return ""; }
+    }
+
+    public void displayCurrentAmount() 
+    {
+        if (inventory.Find(x => x.name == inventory[currentSlot].name).amount > 0)
+        {
+            inventory.Find(x => x.name == inventory[currentSlot].name).amount--;
+            amountText[currentSlot].text = inventory[currentSlot].amount.ToString();
+
+        }
+    }
+
+    public void subtractFromInventory(bool isPlanted)
     {
         if (inventoryGameObject.active == true)
         {
-            if (inventory[currentSlot].name != "")
+            if (inventory[currentSlot].name != "" || selected.name == "")
             {
-                if (inventory.Find(x => x.name == inventory[currentSlot].name).amount > 0)
-                {
-                    inventory.Find(x => x.name == inventory[currentSlot].name).amount--;
-                    amountText[currentSlot].text = inventory[currentSlot].amount.ToString();
-
-                }
-                if (inventory.Find(x => x.name == inventory[currentSlot].name).amount <= 0)
-                {
-                    inventory[currentSlot] = new itemDefault(itemDefault.itemType.none, "", 0, 0, 0, 0, null);
-                    amountText[currentSlot].text = "";
-                    slotText[currentSlot].text = inventory[currentSlot].name;
-                    inventoryFillValue--;
-                }
-
+                selected = inventory[currentSlot];
             }
         }
-        else
+        if(isPlanted == true) 
         {
-            if (inventory.Find(x => x.name == itemName) != null)
+            if (inventory.Find(x => x.name == inventory[currentSlot].name).amount <= 0)
             {
-                if (inventory.Find(x => x.name == itemName).amount > 0)
-                {
-                    inventory.Find(x => x.name == itemName).amount--;
-                    amountText[currentSlot].text = inventory[currentSlot].amount.ToString();
-
-                }
-                if (inventory.Find(x => x.name == itemName).amount <= 0)
-                {
-                    inventory[inventory.FindIndex(x => x.name == itemName)] = new itemDefault(itemDefault.itemType.none, "", 0, 0, 0, 0, null);
-                    amountText[inventory.FindIndex(x => x.name == itemName)].text = "";
-                    slotText[inventory.FindIndex(x => x.name == itemName)].text = inventory[currentSlot].name;
-                    inventoryFillValue--;
-                }
+                inventory[currentSlot] = new itemDefault(itemDefault.itemType.none, "", 0, 0, 0, 0, null, false);
+                amountText[currentSlot].text = "";
+                slotText[currentSlot].text = inventory[currentSlot].name;
+                inventoryFillValue--;
+                selected = inventory[currentSlot];
 
             }
         }
 
 
-        isPressedSub = true;
+
+
+
+        isPressedSelect = true;
     }
 
 
@@ -195,6 +191,7 @@ public class playerInventory : MonoBehaviour
 
                     currentSlot--;
                     arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
+                  
                     isPressed = true;
                 }
 
@@ -206,6 +203,7 @@ public class playerInventory : MonoBehaviour
 
                     currentSlot++;
                     arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
+                    
                     isPressed = true;
                 }
 
@@ -214,6 +212,19 @@ public class playerInventory : MonoBehaviour
             {
                 isPressed = false;
             }
+
+            if (Gamepad.current.aButton.isPressed && !isPressedSelect)
+                subtractFromInventory(false);
+            else
+                isPressedSelect = false;
+
+            if (Gamepad.current.xButton.isPressed && !isPressedDeselect)
+            {
+                selected = new itemDefault(itemDefault.itemType.none, "", 0, 0, 0, 0, null, false);
+                isPressedSelect = true;
+            }
+            else
+                isPressedSelect = false;
 
 
         }
@@ -241,5 +252,9 @@ public class playerInventory : MonoBehaviour
             
 
         }
+
+        
     }
+
+    
 }

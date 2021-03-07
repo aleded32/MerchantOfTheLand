@@ -127,7 +127,10 @@ MonoBehaviour:
   isScraped: 0
   isPlanted: 0
   needsWater: 0
+  isWatered: 0
+  waterWarningCount: 0
   wateredCount: 0
+  isFinishedGrowing: 0
 --- !u!114 &6935861663345848617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,8 +144,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waterWarning: {fileID: 2704528085775562122}
-  intervalWateringCorn: 0500000032000000
-  ispressed: 0
+  intervalWateringCorn: 280000001e000000140000000a000000
+  isBeingPressed: 0
 --- !u!1001 &2711743964297102358
 PrefabInstance:
   m_ObjectHideFlags: 0

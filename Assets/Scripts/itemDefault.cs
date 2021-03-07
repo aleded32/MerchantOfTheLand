@@ -17,9 +17,10 @@ public class itemDefault
     public int wateringTime;
     public string name;
     public Sprite image;
+    bool isSelected;
 
 
-    public itemDefault(itemType _type, string _name, int _amount, int _buyValue, int _sellValue, int _wateringTime, Sprite _image) 
+    public itemDefault(itemType _type, string _name, int _amount, int _buyValue, int _sellValue, int _wateringTime, Sprite _image, bool _isSelected) 
     {
         type = _type;
         name = _name;
@@ -28,6 +29,7 @@ public class itemDefault
         sellValue = _sellValue;
         wateringTime = _wateringTime;
         image = _image;
+        isSelected = _isSelected;
     }
 
 }

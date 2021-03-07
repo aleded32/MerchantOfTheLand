@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlantGrowing : MonoBehaviour
 {
     PlotGeneration Gen;
+    playerInventory inventory;
     float timer;
     public GameObject waterWarning;
     public int[] intervalWateringCorn;
@@ -14,8 +15,11 @@ public class PlantGrowing : MonoBehaviour
     bool waterShown;
     bool waterSignInactive;
 
+    
+
     void Start()
     {
+        inventory = GameObject.FindWithTag("Player").GetComponent<playerInventory>();
         Gen = GameObject.FindWithTag("grid").GetComponent<PlotGeneration>();
         plotPos = GameObject.FindWithTag("Player");
         waterWarningCount = 0;
@@ -32,17 +36,37 @@ public class PlantGrowing : MonoBehaviour
         if (gameObject.GetComponent<CheckIsScraped>().isPlanted == true && gameObject.GetComponent<CheckIsScraped>().isFinishedGrowing == false)
         {
             timer += Time.deltaTime;
-            Debug.Log(waterWarningCount);
-            needsWatering(intervalWateringCorn, 0);
+            Debug.Log(gameObject.GetComponent<CheckIsScraped>().nameOfVeg);
+            needsWatering(itemTimeInterval());
         }
         else 
         {
             waterWarning.SetActive(false);
             timer = 0;
         }
+
+         
     }
 
-   
+    int itemTimeInterval() 
+    {
+       
+        if (gameObject.GetComponent<CheckIsScraped>().nameOfVeg == "Corn") { return intervalWateringCorn[0]; }
+        else if (gameObject.GetComponent<CheckIsScraped>().nameOfVeg == "Cabbage") { return intervalWateringCorn[1]; }
+        else if (gameObject.GetComponent<CheckIsScraped>().nameOfVeg == "Carrot") { return intervalWateringCorn[2]; }
+        else if (gameObject.GetComponent<CheckIsScraped>().nameOfVeg == "Strawberry") { return intervalWateringCorn[3]; }
+        else { return 0; }
+    }
+
+    public int itemSpriteChange(int i)
+    {
+        if (Gen.plots[i].GetComponent<CheckIsScraped>().nameOfVeg == "Corn") { return 2; }
+        else if (Gen.plots[i].GetComponent<CheckIsScraped>().nameOfVeg == "Cabbage") { return 6; }
+        else if (Gen.plots[i].GetComponent<CheckIsScraped>().nameOfVeg == "Carrot") { return 10; }
+        else if (Gen.plots[i].GetComponent<CheckIsScraped>().nameOfVeg == "Strawberry") { return 14; }
+        else { return 0; }
+    }
+
     public void wateringPlant() 
     {
         for (int i = 0; i < Gen.plots.Count; i++)
@@ -63,7 +87,8 @@ public class PlantGrowing : MonoBehaviour
                         }
                         else if(Gen.plots[i].GetComponent<CheckIsScraped>().wateredCount < 4 && Gen.plots[i].transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color == new Color32(255, 255, 255, 112))
                         {
-                            Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[Gen.plots[i].GetComponent<CheckIsScraped>().wateredCount + 2];
+                            Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[itemSpriteChange(i) + Gen.plots[i].GetComponent<CheckIsScraped>().wateredCount];
+                            Debug.Log(itemSpriteChange(i));
                         }
 
                         Gen.plots[i].transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = new Color32(0, 0, 0, 0);
@@ -95,10 +120,10 @@ public class PlantGrowing : MonoBehaviour
     }
 
 
-    void needsWatering(int[] intervalWateringCorn, int i) 
+    void needsWatering(int intervalWateringCorn) 
     {
 
-        if (timer > 0 && timer >= intervalWateringCorn[i] && timer < intervalWateringCorn[i] + 5)
+        if (timer > 0 && timer >= intervalWateringCorn && timer < intervalWateringCorn + 5)
         {
             gameObject.GetComponent<CheckIsScraped>().needsWater = true;
             if (waterShown == false)
@@ -113,7 +138,7 @@ public class PlantGrowing : MonoBehaviour
             waterWarning.SetActive(true);
             
         }
-        else if (timer > 0 && timer > intervalWateringCorn[i] + 5)
+        else if (timer > 0 && timer > intervalWateringCorn + 5)
         {
 
 
@@ -142,7 +167,7 @@ public class PlantGrowing : MonoBehaviour
             waterWarningCount = 0;
         }
 
-        if (timer < intervalWateringCorn[0]) 
+        if (timer < intervalWateringCorn) 
         {
            
             gameObject.GetComponent<CheckIsScraped>().isWatered = false;
@@ -157,10 +182,10 @@ public class PlantGrowing : MonoBehaviour
 
             if (Gen.gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == Gen.gridpos(plotPos.transform.position.x, plotPos.transform.position.y))
             {
-                Debug.Log(22);
+                
                 if (Gen.plots[i].GetComponent<CheckIsScraped>().isFinishedGrowing == true)
                 {
-                    
+                    inventory.addToInventory(Gen.plots[i].GetComponent<CheckIsScraped>().nameOfVeg);
                     Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[1];
                     Gen.plots[i].GetComponent<CheckIsScraped>().isPlanted = false;
                     Gen.plots[i].GetComponent<CheckIsScraped>().needsWater = false;

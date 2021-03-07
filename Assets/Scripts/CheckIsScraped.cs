@@ -11,6 +11,7 @@ public class CheckIsScraped : MonoBehaviour
     public int waterWarningCount;
     public int wateredCount;
     public bool isFinishedGrowing;
+    public string nameOfVeg;
 
     private void Start()
     {
@@ -21,6 +22,7 @@ public class CheckIsScraped : MonoBehaviour
         isWatered = false;
         waterWarningCount = 0;
         isFinishedGrowing = false;
+        nameOfVeg = null;
     }
 
 }
