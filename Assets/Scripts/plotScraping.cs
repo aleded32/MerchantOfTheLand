@@ -9,6 +9,7 @@ public class plotScraping
     PlotGeneration Gen;
     public bool isPlotted = false;
     GameObject plotPos;
+    public bool noHighlight = false;
 
     public plotScraping() 
     {
@@ -63,15 +64,15 @@ public class plotScraping
     {
         for (int i = 0; i < Gen.plots.Count; i++)
         {
-            if (Gen.gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == Gen.gridpos(plotPos.transform.position.x, plotPos.transform.position.y))
+            if (Gen.gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == Gen.gridpos(plotPos.transform.position.x, plotPos.transform.position.y) && noHighlight == false)
             {
-                if(Gamepad.current.aButton.ReadValue() == 1)
-                    Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(169, 169, 169, 200);
-
-
-
+                Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(169, 169, 169, 200);
             }
-            if(Gamepad.current.aButton.ReadValue() == 0)
+            else if (Gen.gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) != Gen.gridpos(plotPos.transform.position.x, plotPos.transform.position.y))
+            {
+                Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+            }
+            if(noHighlight == true)
                 Gen.plots[i].GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
             
             

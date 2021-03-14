@@ -48,7 +48,6 @@ public class plotSeeding
                             {
                
                                 inventory.displayCurrentAmount();
-                                Debug.Log(inventory.inventory[inventory.getCurrentSlot()].amount);
                                 Gen.plots[i].GetComponent<CheckIsScraped>().nameOfVeg = inventory.itemNameToBeGround();
                                 Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[itemSpriteChange(i)];
                                 

@@ -36,7 +36,6 @@ public class PlantGrowing : MonoBehaviour
         if (gameObject.GetComponent<CheckIsScraped>().isPlanted == true && gameObject.GetComponent<CheckIsScraped>().isFinishedGrowing == false)
         {
             timer += Time.deltaTime;
-            Debug.Log(gameObject.GetComponent<CheckIsScraped>().nameOfVeg);
             needsWatering(itemTimeInterval());
         }
         else 
@@ -88,7 +87,6 @@ public class PlantGrowing : MonoBehaviour
                         else if(Gen.plots[i].GetComponent<CheckIsScraped>().wateredCount < 4 && Gen.plots[i].transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color == new Color32(255, 255, 255, 112))
                         {
                             Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[itemSpriteChange(i) + Gen.plots[i].GetComponent<CheckIsScraped>().wateredCount];
-                            Debug.Log(itemSpriteChange(i));
                         }
 
                         Gen.plots[i].transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = new Color32(0, 0, 0, 0);
@@ -98,7 +96,7 @@ public class PlantGrowing : MonoBehaviour
 
                     }
 
-                    else if (Gen.plots[i].GetComponent<CheckIsScraped>().isWatered == false)
+                    else if (Gen.plots[i].GetComponent<CheckIsScraped>().isWatered == false && Gen.plots[i].GetComponent<CheckIsScraped>().isFinishedGrowing != true)
                     {
                         Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[1];
                         Gen.plots[i].GetComponent<CheckIsScraped>().wateredCount = 0;

@@ -76,11 +76,10 @@ public class playerInventory : MonoBehaviour
         updateSelectedText();
         inventoryControls();
 
+        Debug.Log(currentSlot);
 
+        
 
-
-        //TESTING PURPOSE
-      
 
     }
 
@@ -188,20 +187,29 @@ public class playerInventory : MonoBehaviour
             {
                 if (currentSlot > 0)
                 {
-
-                    currentSlot--;
-                    arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
+                    do
+                    {
+                        currentSlot--;
+                    }
+                    while (inventory[currentSlot].name == "");
                   
-                    isPressed = true;
+                    arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
+
+                            isPressed = true;
+
                 }
 
             }
             else if (Gamepad.current.dpad.ReadValue() == new Vector2(0, -1) && isPressed == false)
             {
-                if (inventory[currentSlot].name != "" && currentSlot >= 0 && currentSlot < inventoryFillValue - 1)
+                if (currentSlot >= 0 && currentSlot < inventory.FindLastIndex(x => x.name != "")) 
                 {
 
-                    currentSlot++;
+                    do
+                    {
+                        currentSlot++;
+                    }
+                    while (inventory[currentSlot].name == "");
                     arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
                     
                     isPressed = true;
@@ -218,43 +226,52 @@ public class playerInventory : MonoBehaviour
             else
                 isPressedSelect = false;
 
-            if (Gamepad.current.xButton.isPressed && !isPressedDeselect)
-            {
-                selected = new itemDefault(itemDefault.itemType.none, "", 0, 0, 0, 0, null, false);
-                isPressedSelect = true;
-            }
-            else
-                isPressedSelect = false;
+            
 
 
         }
 
-        if (inventory[currentSlot].name == "" && currentSlot > 0)
-        {
 
-            currentSlot--;
-            arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
-
-        }
-        else if (inventory[currentSlot].name == "" && currentSlot <= 0)
-        {
-            currentSlot++;
-            arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
-        }
 
         if (inventoryFillValue <= 0)
         {
             arrow.color = new Color32(0, 0, 0, 0);
+            currentSlot = 0;
+            arrow.rectTransform.position = new Vector3(arrow.rectTransform.position.x, arrow.rectTransform.position.y, slotText[currentSlot].rectTransform.position.z);
         }
         else if (inventoryFillValue > 0)
         {
             arrow.color = new Color32(255, 255, 255, 255);
-            
+           
 
         }
 
-        
+        if (inventory[currentSlot].name == "" && inventoryFillValue > 0)
+        {
+            do
+            {
+               
+                if (currentSlot >= inventory.FindLastIndex(x=> x.name != "") || inventory.FindLastIndex(x => x.name != "") <= 0) 
+                {
+                    arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[0].rectTransform.anchoredPosition.y);
+                    currentSlot = 0;
+                    break;
+                }
+                currentSlot++;
+            }
+            while (inventory[currentSlot].name == "");
+
+            arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
+
+        }
+
+
+
+
     }
+
+
+    
 
     
 }
