@@ -108,6 +108,11 @@ public class PlayerController : MonoBehaviour
         transform.Translate(move(Vector3.right));
     }
 
+    public void stopAnim() 
+    {
+        anim.SetInteger("speed", 0);
+    }
+
     Vector3 move(Vector3 direction) 
     {
         return direction * speed * Time.deltaTime;
@@ -255,6 +260,16 @@ public class PlayerController : MonoBehaviour
                 type = selectionTypes.none;
             }
 
+        }
+    }
+
+    public void closeShop(GameObject shopUI) 
+    {
+        if (Gamepad.current.xButton.ReadValue() == 1 && shopUI.active == true) 
+        {
+            shopUI.SetActive(false);
+            gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - 0.5f, gameObject.transform.position.z);
+            
         }
     }
 }

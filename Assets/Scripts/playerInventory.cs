@@ -6,27 +6,48 @@ using UnityEngine.UI;
 
 public class playerInventory : MonoBehaviour
 {
-    ItemDatabase itemDatabase;
+    [HideInInspector]
+    public ItemDatabase itemDatabase;
+    [HideInInspector]
     public Sprite[] imageItem;
+    [HideInInspector]
     public List<itemDefault> inventory;
     itemDefault selected;
     bool isPressedSelect = false;
-    bool isPressedDeselect = false;
     bool isPressed = false;
+    [HideInInspector]
+    public bool inventoryControl = true;
+
+    [HideInInspector]
+    public shopInteraction shopInter;
+
+
     int inventoryFillValue = 0;
 
+    [HideInInspector]
+    public int money;
+    [HideInInspector]
+    public Text moneyText;
+
+    [HideInInspector]
     public Text[] slotText;
+    [HideInInspector]
     public Text[] amountText;
+    [HideInInspector]
     public Text selectedText;
+    [HideInInspector]
     public Image arrow;
+    [HideInInspector]
     public GameObject inventoryGameObject;
+
+    public Text sellValueText;
 
     int currentSlot = 0;
 
 
     void Start()
     {
-
+        money = 0;
         arrow.rectTransform.position = new Vector3(arrow.rectTransform.position.x, arrow.rectTransform.position.y, slotText[currentSlot].rectTransform.position.z);
 
         selected = new itemDefault(itemDefault.itemType.none, "", 0, 0, 0, 0, null, false);
@@ -47,18 +68,9 @@ public class playerInventory : MonoBehaviour
         };
         itemDatabase = new ItemDatabase(imageItem);
 
-        addToInventory("Strawberry Seed");
-        addToInventory("Strawberry Seed");
-        addToInventory("Strawberry Seed");
+
         addToInventory("Corn Seed");
         addToInventory("Corn Seed");
-        addToInventory("Corn Seed");
-        addToInventory("Corn Seed");
-        addToInventory("Carrot Seed");
-        addToInventory("Carrot Seed");
-        addToInventory("Cabbage Seed");
-        addToInventory("Cabbage Seed");
-        addToInventory("Cabbage Seed");
 
 
     }
@@ -66,6 +78,10 @@ public class playerInventory : MonoBehaviour
     void updateSelectedText() 
     {
         selectedText.text = selected.name;
+
+        moneyText.text = money.ToString() + "G";
+        sellValueText.text = inventory[currentSlot].sellValue.ToString() + "G";
+
     }
 
     // Update is called once per frame
@@ -76,7 +92,6 @@ public class playerInventory : MonoBehaviour
         updateSelectedText();
         inventoryControls();
 
-        Debug.Log(currentSlot);
 
         
 
@@ -150,7 +165,7 @@ public class playerInventory : MonoBehaviour
 
     public void subtractFromInventory(bool isPlanted)
     {
-        if (inventoryGameObject.active == true)
+        if (inventoryGameObject.active == true && isPlanted == false)
         {
             if (inventory[currentSlot].name != "" || selected.name == "")
             {
@@ -166,6 +181,7 @@ public class playerInventory : MonoBehaviour
                 slotText[currentSlot].text = inventory[currentSlot].name;
                 inventoryFillValue--;
                 selected = inventory[currentSlot];
+                
 
             }
         }
@@ -181,7 +197,15 @@ public class playerInventory : MonoBehaviour
 
     void inventoryControls()
     {
-        if (inventoryGameObject.active == true)
+
+        if (shopInter.shopMenu.active == false)
+        {
+            inventoryControl = true;
+            shopInter.selectedItem.SetActive(true);
+        }
+
+
+        if (inventoryGameObject.active == true && inventoryControl == true)
         {
             if (Gamepad.current.dpad.ReadValue() == new Vector2(0, 1) && isPressed == false)
             {
@@ -192,17 +216,17 @@ public class playerInventory : MonoBehaviour
                         currentSlot--;
                     }
                     while (inventory[currentSlot].name == "");
-                  
+
                     arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
 
-                            isPressed = true;
+                    isPressed = true;
 
                 }
 
             }
             else if (Gamepad.current.dpad.ReadValue() == new Vector2(0, -1) && isPressed == false)
             {
-                if (currentSlot >= 0 && currentSlot < inventory.FindLastIndex(x => x.name != "")) 
+                if (currentSlot >= 0 && currentSlot < inventory.FindLastIndex(x => x.name != ""))
                 {
 
                     do
@@ -211,25 +235,58 @@ public class playerInventory : MonoBehaviour
                     }
                     while (inventory[currentSlot].name == "");
                     arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
-                    
+
                     isPressed = true;
                 }
 
             }
             else if (Gamepad.current.dpad.ReadValue() == new Vector2(0, 0))
             {
+                
                 isPressed = false;
             }
+            else if (Gamepad.current.dpad.ReadValue() == new Vector2(1, 0) && shopInter.shopMenu.active == true) 
+            {
+                arrow.color = new Color32(0, 0, 0, 0);
+                inventoryControl = false;
+                
+            }
+            else if (Gamepad.current.dpad.ReadValue() == new Vector2(-1, 0) && shopInter.shopMenu.active == true)
+            {
+                arrow.color = new Color32(255, 255, 255, 255);
+            }
 
-            if (Gamepad.current.aButton.isPressed && !isPressedSelect)
-                subtractFromInventory(false);
-            else
+
+            if (Gamepad.current.aButton.ReadValue() == 1 && !isPressedSelect) 
+            {
+                if (shopInter.shopMenu.active == true) 
+                {
+                    if(inventory[currentSlot].amount > 0) 
+                    {
+                        displayCurrentAmount();
+                        
+                    }
+                    money += inventory[currentSlot].sellValue;
+                    subtractFromInventory(true);
+                    
+                }
+                else 
+                {
+                    
+                    subtractFromInventory(false);
+                }
+               
+            }
+            else if(Gamepad.current.aButton.ReadValue() == 0)
                 isPressedSelect = false;
+
+
 
             
 
 
         }
+
 
 
 
@@ -239,7 +296,7 @@ public class playerInventory : MonoBehaviour
             currentSlot = 0;
             arrow.rectTransform.position = new Vector3(arrow.rectTransform.position.x, arrow.rectTransform.position.y, slotText[currentSlot].rectTransform.position.z);
         }
-        else if (inventoryFillValue > 0)
+        else if (inventoryFillValue > 0 && inventoryControl == true)
         {
             arrow.color = new Color32(255, 255, 255, 255);
            

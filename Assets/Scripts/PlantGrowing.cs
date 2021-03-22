@@ -31,18 +31,21 @@ public class PlantGrowing : MonoBehaviour
 
     void Update()
     {
+
         
-       
-        if (gameObject.GetComponent<CheckIsScraped>().isPlanted == true && gameObject.GetComponent<CheckIsScraped>().isFinishedGrowing == false)
-        {
-            timer += Time.deltaTime;
-            needsWatering(itemTimeInterval());
-        }
-        else 
-        {
-            waterWarning.SetActive(false);
-            timer = 0;
-        }
+            if (gameObject.GetComponent<CheckIsScraped>().isPlanted == true && gameObject.GetComponent<CheckIsScraped>().isFinishedGrowing == false)
+            {
+                timer += Time.deltaTime;
+                needsWatering(itemTimeInterval());
+            }
+            else
+            {
+                waterWarning.SetActive(false);
+                timer = 0;
+            }
+            
+
+        
 
          
     }

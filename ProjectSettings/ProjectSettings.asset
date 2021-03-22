@@ -563,7 +563,7 @@ PlayerSettings:
   m_MobileRenderingPath: 1
   metroPackageName: 2D_BuiltInRenderer
   metroPackageVersion: 
-  metroCertificatePath: D:\GitHub\MerchantOfTheLands\MerchantOfTheLand\Assets\WSATestCertificate.pfx
+  metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
   metroCertificateIssuer: DefaultCompany
