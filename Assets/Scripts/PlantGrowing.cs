@@ -184,7 +184,7 @@ public class PlantGrowing : MonoBehaviour
             if (Gen.gridpos(Gen.plots[i].transform.position.x, Gen.plots[i].transform.position.y) == Gen.gridpos(plotPos.transform.position.x, plotPos.transform.position.y))
             {
                 
-                if (Gen.plots[i].GetComponent<CheckIsScraped>().isFinishedGrowing == true)
+                if (Gen.plots[i].GetComponent<CheckIsScraped>().isFinishedGrowing == true && Gen.plots[i].GetComponent<CheckIsScraped>().nameOfVeg != "")
                 {
                     inventory.addToInventory(Gen.plots[i].GetComponent<CheckIsScraped>().nameOfVeg);
                     Gen.plots[i].GetComponent<SpriteRenderer>().sprite = Gen.plotTiles[1];

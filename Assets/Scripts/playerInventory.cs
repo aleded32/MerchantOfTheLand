@@ -21,7 +21,7 @@ public class playerInventory : MonoBehaviour
     [HideInInspector]
     public shopInteraction shopInter;
 
-
+    public GameObject pauseMenu;
     int inventoryFillValue = 0;
 
     [HideInInspector]
@@ -47,7 +47,7 @@ public class playerInventory : MonoBehaviour
 
     void Start()
     {
-        money = 0;
+        money = 14;
         arrow.rectTransform.position = new Vector3(arrow.rectTransform.position.x, arrow.rectTransform.position.y, slotText[currentSlot].rectTransform.position.z);
 
         selected = new itemDefault(itemDefault.itemType.none, "", 0, 0, 0, 0, null, false);
@@ -69,10 +69,13 @@ public class playerInventory : MonoBehaviour
         itemDatabase = new ItemDatabase(imageItem);
 
 
-        addToInventory("Corn Seed");
-        addToInventory("Corn Seed");
 
+    }
 
+    public int setCurrentSlot(int newCurrentSlot) 
+    {
+        currentSlot = newCurrentSlot;
+        return currentSlot;
     }
 
     void updateSelectedText() 
@@ -90,7 +93,9 @@ public class playerInventory : MonoBehaviour
 
 
         updateSelectedText();
-        inventoryControls();
+
+        if(!pauseMenu.activeSelf)
+            inventoryControls();
 
 
         
@@ -193,6 +198,38 @@ public class playerInventory : MonoBehaviour
         isPressedSelect = true;
     }
 
+    void checkEmptyInventory()
+    {
+        if (inventory[currentSlot].name == "" && inventoryFillValue > 0)
+        {
+            do
+            {
+                
+                if (currentSlot >= inventory.FindLastIndex(x => x.name != "") || inventory.FindLastIndex(x => x.name != "") <= 0)
+                {
+                    currentSlot = 0;
+
+                    arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[0].rectTransform.anchoredPosition.y);
+                    break;
+                }
+                currentSlot++;
+            }
+            while (inventory[currentSlot].name == "");
+        }
+
+        if (inventoryFillValue <= 0)
+        {
+            arrow.color = new Color32(0, 0, 0, 0);
+            currentSlot = 0;
+            arrow.rectTransform.position = new Vector3(arrow.rectTransform.position.x, arrow.rectTransform.position.y, slotText[currentSlot].rectTransform.position.z);
+        }
+        else if (inventoryFillValue > 0 && inventoryControl == true)
+        {
+            arrow.color = new Color32(255, 255, 255, 255);
+
+
+        }
+    }
 
 
     void inventoryControls()
@@ -207,6 +244,13 @@ public class playerInventory : MonoBehaviour
 
         if (inventoryGameObject.active == true && inventoryControl == true)
         {
+
+            checkEmptyInventory();
+
+            arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
+
+
+
             if (Gamepad.current.dpad.ReadValue() == new Vector2(0, 1) && isPressed == false)
             {
                 if (currentSlot > 0)
@@ -242,14 +286,14 @@ public class playerInventory : MonoBehaviour
             }
             else if (Gamepad.current.dpad.ReadValue() == new Vector2(0, 0))
             {
-                
+
                 isPressed = false;
             }
-            else if (Gamepad.current.dpad.ReadValue() == new Vector2(1, 0) && shopInter.shopMenu.active == true) 
+            else if (Gamepad.current.dpad.ReadValue() == new Vector2(1, 0) && shopInter.shopMenu.active == true)
             {
                 arrow.color = new Color32(0, 0, 0, 0);
                 inventoryControl = false;
-                
+
             }
             else if (Gamepad.current.dpad.ReadValue() == new Vector2(-1, 0) && shopInter.shopMenu.active == true)
             {
@@ -257,78 +301,46 @@ public class playerInventory : MonoBehaviour
             }
 
 
-            if (Gamepad.current.aButton.ReadValue() == 1 && !isPressedSelect) 
+            if (Gamepad.current.aButton.ReadValue() == 1 && !isPressedSelect)
             {
-                if (shopInter.shopMenu.active == true) 
+                if (shopInter.shopMenu.active == true)
                 {
-                    if(inventory[currentSlot].amount > 0) 
+
+                    if (inventory[currentSlot].amount > 0)
                     {
                         displayCurrentAmount();
-                        
+
                     }
                     money += inventory[currentSlot].sellValue;
+
                     subtractFromInventory(true);
-                    
+
                 }
-                else 
+                else
                 {
-                    
+
                     subtractFromInventory(false);
                 }
-               
+
             }
-            else if(Gamepad.current.aButton.ReadValue() == 0)
+            else if (Gamepad.current.aButton.ReadValue() == 0)
                 isPressedSelect = false;
 
 
 
-            
-
 
         }
-
-
-
-
-        if (inventoryFillValue <= 0)
-        {
-            arrow.color = new Color32(0, 0, 0, 0);
-            currentSlot = 0;
-            arrow.rectTransform.position = new Vector3(arrow.rectTransform.position.x, arrow.rectTransform.position.y, slotText[currentSlot].rectTransform.position.z);
-        }
-        else if (inventoryFillValue > 0 && inventoryControl == true)
-        {
-            arrow.color = new Color32(255, 255, 255, 255);
-           
-
-        }
-
-        if (inventory[currentSlot].name == "" && inventoryFillValue > 0)
-        {
-            do
-            {
-               
-                if (currentSlot >= inventory.FindLastIndex(x=> x.name != "") || inventory.FindLastIndex(x => x.name != "") <= 0) 
-                {
-                    arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[0].rectTransform.anchoredPosition.y);
-                    currentSlot = 0;
-                    break;
-                }
-                currentSlot++;
-            }
-            while (inventory[currentSlot].name == "");
-
-            arrow.rectTransform.anchoredPosition = new Vector3(arrow.rectTransform.anchoredPosition.x, slotText[currentSlot].rectTransform.anchoredPosition.y);
-
-        }
-
-
-
 
     }
 
 
-    
 
-    
+
+        
+
+        
+
+
+
+
 }

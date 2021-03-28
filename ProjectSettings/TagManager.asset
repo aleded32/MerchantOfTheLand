@@ -9,6 +9,7 @@ TagManager:
   - plot
   - grid
   - equipIcon
+  - audio
   layers:
   - Default
   - TransparentFX

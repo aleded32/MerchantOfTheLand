@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     public GameObject selectionWheel;
     public Image[] selections;
     public Sprite[] equipSprites;
+    public GameObject pauseMenu;
+    public bool isPausePressed;
+    bool isPressed;
 
     enum selectionTypes 
     {
@@ -36,8 +39,8 @@ public class PlayerController : MonoBehaviour
         scraping = new plotScraping();
         seeding = new plotSeeding();
         type = selectionTypes.none;
-       
-        
+        isPausePressed = false;
+        isPressed = false;
         
     }
 
@@ -52,7 +55,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Gamepad.current.xButton.ReadValue() == 1)
+        if (Gamepad.current.bButton.ReadValue() == 1)
         {
             if (inventory.active == true)
             {
@@ -60,12 +63,13 @@ public class PlayerController : MonoBehaviour
                 inventory.SetActive(false);
 
             }
+            else if(inventory.active == false)
+            {
+                growing.pickupVeg();
+            }
 
         }
-        else if (Gamepad.current.yButton.ReadValue() == 1) 
-        {
-            growing.pickupVeg();
-        }
+        
 
         scraping.highlightPlot();
     }
@@ -121,26 +125,26 @@ public class PlayerController : MonoBehaviour
     
     void GamePadControls() 
     {
-        if (Gamepad.current.aButton.ReadValue() == 0 && Gamepad.current.bButton.ReadValue() == 0 && inventory.active == false)
+        if (Gamepad.current.yButton.ReadValue() == 0 && Gamepad.current.bButton.ReadValue() == 0 && inventory.active == false && !pauseMenu.activeSelf)
         {
-            if (Gamepad.current.leftStick.left.isPressed)
+            if (Gamepad.current.dpad.left.isPressed)
             {
                 moveLeft();
             }
-            else if (Gamepad.current.leftStick.right.isPressed)
+            else if (Gamepad.current.dpad.right.isPressed)
             {
                 moveRight();
             }
-            else if (Gamepad.current.leftStick.up.isPressed)
+            else if (Gamepad.current.dpad.up.isPressed)
             {
                 moveUp();
 
             }
-            else if (!Gamepad.current.leftStick.IsPressed())
+            else if (!Gamepad.current.dpad.IsPressed())
             {
                 anim.SetInteger("speed", 0);
             }
-            else if (Gamepad.current.leftStick.down.isPressed)
+            else if (Gamepad.current.dpad.down.isPressed)
             {
                 moveDown();
             }
@@ -150,7 +154,7 @@ public class PlayerController : MonoBehaviour
 
 
         }
-        else if (Gamepad.current.aButton.ReadValue() == 1)
+        else if (Gamepad.current.yButton.ReadValue() == 1 && inventory.active == false && !pauseMenu.activeSelf)
         {
             if (inventory.active == false)
             {
@@ -164,51 +168,73 @@ public class PlayerController : MonoBehaviour
                 {
                     selections[0].color = new Color32(168, 168, 168, 255);
                     type = selectionTypes.hoeing;
-                    
+
 
                 }
                 else if (Gamepad.current.dpad.ReadValue() == new Vector2(0, -1))
                 {
                     selections[2].color = new Color32(168, 168, 168, 255);
                     type = selectionTypes.seeding;
-                   
+
                 }
                 else if (Gamepad.current.dpad.ReadValue() == new Vector2(-1, 0))
                 {
                     selections[1].color = new Color32(168, 168, 168, 255);
                     type = selectionTypes.watering;
-                   
 
+
+                }
+                else if (Gamepad.current.dpad.ReadValue() == new Vector2(1,0))
+                {
+                    selections[3].color = new Color32(168, 168, 168, 255);
+                    type = selectionTypes.none;
                 }
                 else
                 {
-                    
+
                     foreach (Image image in selections)
                     {
                         image.color = new Color32(255, 255, 255, 255);
                     }
-                    
+
 
                 }
             }
+            
 
-            if (Gamepad.current.dpad.ReadValue() == new Vector2(1, 0))
-            {
-                Time.timeScale = 0.0f;
-                selections[3].color = new Color32(168, 168, 168, 255);
-                inventory.SetActive(true);
-                selectionWheel.SetActive(false);
-                
-                
-
-            }
+          
             
            
 
         }
 
+        if (Gamepad.current.xButton.ReadValue() == 1 && selectionWheel.activeSelf == false && pauseMenu.activeSelf == false)
+        {
+            Time.timeScale = 0.0f;
+            inventory.SetActive(true);
+
+        }
+
+        if (Gamepad.current.startButton.isPressed && isPausePressed == false)
+        {
+            if (pauseMenu.activeSelf == false)
+            {
+                Time.timeScale = 0.0f;
+                pauseMenu.SetActive(true);
+               
+            }
+            isPausePressed = true;
+            
+
+        }
+        else if (!Gamepad.current.startButton.isPressed && isPausePressed == true) 
+        {
+            isPausePressed = false;
+        }
         
-        
+
+
+
 
         if (inventory.active == false)
         {
@@ -216,18 +242,21 @@ public class PlayerController : MonoBehaviour
             {
                 scraping.noHighlight = false;
                 equippedIcon.sprite = equipSprites[0];
-                if (Gamepad.current.bButton.ReadValue() == 1) 
+                if (Gamepad.current.aButton.ReadValue() == 1 && !isPressed)
                 {
-                    
+
                     scraping.hoeingPlot();
+                    isPressed = true;
                 }
+                else if (Gamepad.current.aButton.ReadValue() == 0 && isPressed)
+                    isPressed = false;
 
             }
             else if (type == selectionTypes.seeding)
             {
                 scraping.noHighlight = false;
                 equippedIcon.sprite = equipSprites[2];
-                if (Gamepad.current.bButton.ReadValue() == 1)
+                if (Gamepad.current.aButton.ReadValue() == 1)
                 {
                    
                     seeding.plantingSeed();
@@ -238,7 +267,7 @@ public class PlayerController : MonoBehaviour
             {
                 scraping.noHighlight = false;
                 equippedIcon.sprite = equipSprites[1];
-                if (Gamepad.current.bButton.ReadValue() == 1)
+                if (Gamepad.current.aButton.ReadValue() == 1)
                 {
 
                     growing.wateringPlant();
@@ -255,17 +284,14 @@ public class PlayerController : MonoBehaviour
                 equippedIcon.sprite = equipSprites[3];
             }
 
-            if (Gamepad.current.yButton.ReadValue() == 1) 
-            {
-                type = selectionTypes.none;
-            }
+            
 
         }
     }
 
     public void closeShop(GameObject shopUI) 
     {
-        if (Gamepad.current.xButton.ReadValue() == 1 && shopUI.active == true) 
+        if (Gamepad.current.bButton.ReadValue() == 1 && shopUI.active == true) 
         {
             shopUI.SetActive(false);
             gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - 0.5f, gameObject.transform.position.z);

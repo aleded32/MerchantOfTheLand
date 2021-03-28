@@ -30,7 +30,9 @@ public class shopInteraction : MonoBehaviour
         {
             shopMenu.SetActive(true);
             inventory.inventoryGameObject.SetActive(true);
-            arrow.gameObject.SetActive(false);
+            arrow.gameObject.SetActive(true);
+            inventory.inventoryControl = false;
+            inventory.arrow.color = new Color32(0, 0, 0, 0);
             selectedItem.SetActive(false);
             controller.stopAnim();
 
@@ -55,8 +57,11 @@ public class shopInteraction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        controller.closeShop(shopMenu);
-        inventoryControls();
+        if (inventory.pauseMenu.activeSelf == false)
+        {
+            controller.closeShop(shopMenu);
+            inventoryControls();
+        }
     }
 
     void setShopUI() 
@@ -139,6 +144,7 @@ public class shopInteraction : MonoBehaviour
         else if (Gamepad.current.dpad.ReadValue() == new Vector2(-1, 0))
         {
             inventory.inventoryControl = true;
+            inventory.arrow.color = new Color32(255, 255, 255, 255);
             arrow.gameObject.SetActive(false);
         }
 
